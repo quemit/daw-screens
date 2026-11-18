@@ -1,0 +1,31 @@
+name: Shrink TV videos
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: shrink
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  shrink:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get ffmpeg
+        run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+      - name: Shrink any big videos
+        env:
+          NOW_SHOWING_URL: https://script.google.com/macros/s/AKfycbzKbUZ5sWH0BmEbl--z4s_majFIG5ZlGpO6YgUYU8xi7G6m1_z0dAjT62zbv8g-0_l7/exec
+          SHRINK_KEY: ${{ secrets.SHRINK_KEY }}
+        run: python3 tools/shrink.py
+      - name: Keep the schedule alive
+        # GitHub pauses schedules after 60 quiet days; a small monthly commit prevents that.
+        run: |
+          last=$(git log -1 --format=%ct)
+          if [ $(( $(date +%s) - last )) -gt 3888000 ]; then
+            git config user.name "daw-bot"; git config user.email "daw-bot@users.noreply.github.com"
+            git commit --allow-empty -m "keep schedule alive" && git push
+          fi

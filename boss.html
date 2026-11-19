@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your next event, right here | The Warehouse @ King Mill</title>
+<meta name="description" content="Office parties, church anniversaries, proms, military balls, family reunions. Up to 150 guests in a brick mill built in 1882. Venue rental from $1,800. Augusta, GA.">
+<meta property="og:title" content="Found our next event spot: The Warehouse @ King Mill">
+<meta property="og:description" content="Up to 150 guests · stage + sound · bring your own caterer · built 1882 · venue rental from $1,800 · 1661 Broad St, Augusta">
+<meta property="og:image" content="https://quemit.github.io/daw-screens/boss/share.jpg">
+<meta property="og:url" content="https://quemit.github.io/daw-screens/boss.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Public+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF;      /* page */
+  --ink:#1C1714;        /* warm near-black, the brick-and-timber dark */
+  --red:#C41E3A;        /* party red, the only accent */
+  --red-deep:#9E1830;   /* pressed state */
+  --mortar:#E7E2DE;     /* hairlines + quiet blocks */
+  --mute:#6B625C;       /* secondary text */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Public Sans',-apple-system,sans-serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:96px}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:4px}
+.disp{font-family:'Bodoni Moda',Didot,Georgia,serif;font-weight:700;letter-spacing:-.01em}
+
+/* ---------- hero: the room you're standing in ---------- */
+.hero{position:relative;min-height:78vh;min-height:78svh;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;overflow:hidden}
+.hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,23,20,.35) 0%,rgba(28,23,20,0) 30%,rgba(28,23,20,.15) 55%,rgba(28,23,20,.88) 100%)}
+.hero .logo{position:absolute;top:16px;left:16px;width:68px;height:68px;border-radius:50%;z-index:2;box-shadow:0 0 0 3px #fff}
+.hero .in{position:relative;z-index:2;padding:0 20px 28px;max-width:720px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+.kicker b{color:#fff;background:var(--red);padding:3px 8px;border-radius:3px;font-weight:800}
+.hero h1{font-size:clamp(44px,12vw,84px);line-height:.98}
+.hero p{margin-top:12px;font-size:18px;max-width:30ch;color:rgba(255,255,255,.92)}
+
+/* ---------- signature: the hand-off note ---------- */
+.note{margin:-26px 16px 0;position:relative;z-index:3;background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;padding:22px 20px 20px;max-width:640px;box-shadow:8px 8px 0 var(--red)}
+.note .row{display:flex;gap:10px;font-size:15px;border-bottom:1px dashed var(--mortar);padding:6px 0}
+.note .row span:first-child{width:52px;flex:none;color:var(--mute);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.12em;padding-top:3px}
+.who{font-weight:800;color:var(--red);display:inline-block;min-width:9ch}
+.who.swap{animation:swap .45s ease}
+@keyframes swap{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.note .msg{font-family:'Bodoni Moda',Georgia,serif;font-size:24px;line-height:1.25;margin:16px 0 18px}
+.btns{display:grid;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;border-radius:6px;font:800 16px/1 'Public Sans',sans-serif;text-decoration:none;border:0;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent}
+.btn.red{background:var(--red);color:#fff}
+.btn.red:active{background:var(--red-deep)}
+.btn.line{background:var(--paper);color:var(--ink);border:1.5px solid var(--ink)}
+.copied{font-size:14px;color:var(--mute);min-height:20px;margin-top:6px;text-align:center}
+
+/* ---------- the numbers ---------- */
+section{padding:44px 20px 0;max-width:760px;margin:0 auto}
+.label{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.nums{display:grid;grid-template-columns:1fr;border-top:1.5px solid var(--ink)}
+.num{display:grid;grid-template-columns:44% 1fr;align-items:baseline;gap:12px;padding:14px 0;border-bottom:1px solid var(--mortar)}
+.num .disp{font-size:44px;line-height:1}
+.num p{font-size:15px;color:var(--mute)}
+.num p b{color:var(--ink);display:block;font-size:16px}
+
+/* ---------- rooms strip ---------- */
+.strip{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px 6px;margin:0 -20px;-webkit-overflow-scrolling:touch}
+.strip figure{flex:0 0 78%;scroll-snap-align:start;max-width:420px}
+.strip img{aspect-ratio:4/5;object-fit:cover;border-radius:6px;width:100%}
+.strip figcaption{font-size:14px;color:var(--mute);margin-top:6px}
+
+/* ---------- event list ---------- */
+.events{list-style:none;border-top:1.5px solid var(--ink)}
+.events li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 0;border-bottom:1px solid var(--mortar);font-size:19px;font-weight:600}
+.events li span{font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-weight:500;color:var(--red);font-size:17px;white-space:nowrap}
+
+/* ---------- golf cart + tour ---------- */
+.cart{background:var(--ink);color:#fff;border-radius:6px;padding:24px 20px}
+.cart .disp{font-size:30px;line-height:1.1}
+.cart p{color:rgba(255,255,255,.82);margin-top:8px;font-size:15px}
+.cart em{font-style:normal;color:#fff;border-bottom:2px solid var(--red)}
+.facts{margin-top:14px;font-size:15px;color:var(--mute)}
+.facts b{color:var(--ink)}
+footer{max-width:760px;margin:44px auto 0;padding:24px 20px;border-top:1.5px solid var(--ink);font-size:14px;color:var(--mute);display:flex;gap:14px;align-items:center}
+footer img{width:44px;height:44px;border-radius:50%}
+footer a{font-weight:700;color:var(--ink);text-decoration:none}
+
+/* ---------- sticky action bar ---------- */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--mortar);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:8px;transform:translateY(110%);transition:transform .3s ease}
+.bar.show{transform:none}
+.bar .btn{min-height:48px;font-size:15px}
+
+@media (min-width:760px){
+  .note{margin:-40px auto 0}
+  .btns{grid-template-columns:1fr 1fr}
+  .nums{grid-template-columns:1fr 1fr 1fr;column-gap:24px}
+  .num{grid-template-columns:1fr;gap:4px}
+  .strip figure{flex-basis:300px}
+  .bar{display:none}
+  body{padding-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img class="bg" src="boss/banquet.jpg" alt="The Warehouse @ King Mill set for a dinner: red and gold tables under the wood truss ceiling" fetchpriority="high">
+  <img class="logo" src="boss/logo.jpg" alt="The Warehouse @ King Mill logo">
+  <div class="in">
+    <div class="kicker"><b>You're here now</b></div>
+    <h1 class="disp">Your next event. Right here.</h1>
+    <p>Having a good time? This is the room. Pass it on to whoever plans the next one.</p>
+  </div>
+</header>
+
+<div class="note" aria-label="Pass this on">
+  <div class="row"><span>To</span><strong class="who" id="who">my boss</strong></div>
+  <div class="row"><span>From</span><strong>someone who was just here</strong></div>
+  <p class="msg">"Found our spot for the next one. 150 people, a stage, and it was built in 1882."</p>
+  <div class="btns">
+    <button class="btn red" id="send" type="button"><span>Send this to <span id="who2">my boss</span></span></button>
+    <a class="btn line" id="tour1" href="https://form.jotform.com/250984221759061">Book a tour</a>
+  </div>
+  <div class="copied" id="copied" role="status" aria-live="polite"></div>
+</div>
+
+<section>
+  <div class="label">The short version</div>
+  <div class="nums">
+    <div class="num"><div class="disp">150</div><p><b>guests</b>Seated dinner, dance floor and stage in one open room.</p></div>
+    <div class="num"><div class="disp">1882</div><p><b>built</b>Brick walls and the original wood truss ceiling.</p></div>
+    <div class="num"><div class="disp">$1,800</div><p><b>venue rental from</b>Décor not included.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="label">Same room, different nights</div>
+  <div class="strip" tabindex="0" aria-label="Photos of the room set up for different events">
+    <figure><img loading="lazy" src="boss/glam.jpg" alt="Winter gala setup with draped lights and a lit bar"><figcaption>Gala and military ball</figcaption></figure>
+    <figure><img loading="lazy" src="boss/hall.jpg" alt="Holiday party with trees, garland and round tables"><figcaption>Office holiday party</figcaption></figure>
+    <figure><img loading="lazy" src="boss/archway.jpg" alt="Long tables set classroom style for a meeting"><figcaption>Church and company meetings</figcaption></figure>
+    <figure><img loading="lazy" src="boss/lounge.jpg" alt="Lounge corner with a red sofa and a decorated tree"><figcaption>Lounge and photo corner</figcaption></figure>
+    <figure><img loading="lazy" src="boss/stage1_decorated.jpg" alt="Bar and buffet side of the room with round tables"><figcaption>Bar and buffet side</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <div class="label">Who brings their people here</div>
+  <ul class="events">
+    <li>Office and holiday parties <span>Right here.</span></li>
+    <li>Church anniversaries <span>Right here.</span></li>
+    <li>Proms and military balls <span>Right here.</span></li>
+    <li>Family reunions <span>Right here.</span></li>
+    <li>Milestone birthdays <span>Right here.</span></li>
+  </ul>
+</section>
+
+<section>
+  <div class="cart">
+    <div class="disp">Book a tour. Book your event. The golf cart upgrade is on us.</div>
+    <p>For anyone who found us from the screens tonight and <em>books their event</em>.</p>
+  </div>
+  <p class="facts"><b>Stage + sound</b> ready to go · <b>Bring your own caterer</b> · <b>Tours</b> Tuesday to Friday, 11 to 5, about 20 to 30 minutes. Your tour confirmation email arrives right after you book it.</p>
+  <div class="btns" style="margin-top:16px">
+    <a class="btn red" id="tour2" href="https://form.jotform.com/250984221759061">Pick a tour time</a>
+    <a class="btn line" id="call" href="tel:+14045122562">Call 404.512.2562</a>
+  </div>
+</section>
+
+<footer>
+  <img src="boss/logo.jpg" alt="">
+  <div>The Warehouse @ King Mill<br>1661 Broad St, Augusta, GA 30901 · <a href="https://thewarehouseaugustaga.com">thewarehouseaugustaga.com</a></div>
+</footer>
+
+<div class="bar" id="bar">
+  <button class="btn line" id="send2" type="button">Send to my boss</button>
+  <a class="btn red" id="tour3" href="https://form.jotform.com/250984221759061">Book a tour</a>
+</div>
+
+<script>
+(function () {
+  var BEACON = 'https://script.google.com/macros/s/AKfycbzKbUZ5sWH0BmEbl--z4s_majFIG5ZlGpO6YgUYU8xi7G6m1_z0dAjT62zbv8g-0_l7/exec';
+  var FORM = 'https://form.jotform.com/250984221759061';
+  var q = new URLSearchParams(location.search);
+  var src = (q.get('s') || '').toLowerCase();
+  if (!/^tv_(stage|side|entrance|bar|projector)$/.test(src)) src = '';
+  var fwd = q.get('f') === '1';
+
+  function ping(ev) {
+    if (location.hostname !== 'quemit.github.io') return;   // previews never count
+    var who = fwd ? 'share' : (src || 'direct');
+    try { fetch(BEACON + '?scan=' + who + '&ev=' + ev, { mode: 'no-cors', keepalive: true }); } catch (e) {}
+  }
+  ping('view');
+
+  // Tour links carry where the person came from into the hidden form fields.
+  var tourUrl = FORM + (src ? '?utm_source=' + src + '&utm_campaign=show_your_boss' + (fwd ? '_fwd' : '') : '');
+  ['tour1', 'tour2', 'tour3'].forEach(function (id) {
+    var a = document.getElementById(id);
+    a.href = tourUrl;
+    a.addEventListener('click', function () { ping('tour'); });
+  });
+  document.getElementById('call').addEventListener('click', function () { ping('call'); });
+
+  // The link they pass on keeps the TV tag and marks it as forwarded.
+  var shareUrl = 'https://quemit.github.io/daw-screens/boss.html' + (src ? '?s=' + src + '&f=1' : '');
+  var shareText = 'Found our spot for the next one: The Warehouse @ King Mill in Augusta. Up to 150 guests, stage + sound, built 1882, venue rental from $1,800.';
+  var copied = document.getElementById('copied');
+  function send() {
+    ping('share');
+    if (navigator.share) {
+      navigator.share({ title: 'The Warehouse @ King Mill', text: shareText, url: shareUrl }).catch(function () {});
+      return;
+    }
+    var done = function () { copied.textContent = 'Link copied. Paste it into a text to your boss.'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(shareText + ' ' + shareUrl).then(done, function () { location.href = 'mailto:?subject=' + encodeURIComponent('Our next event?') + '&body=' + encodeURIComponent(shareText + '\n\n' + shareUrl); });
+    else location.href = 'mailto:?subject=' + encodeURIComponent('Our next event?') + '&body=' + encodeURIComponent(shareText + '\n\n' + shareUrl);
+  }
+  document.getElementById('send').addEventListener('click', send);
+  document.getElementById('send2').addEventListener('click', send);
+
+  // Signature: the note is addressed to whoever plans the next one.
+  var people = ['my boss', 'my pastor', 'the family', 'the prom committee', 'the planner'];
+  var who = document.getElementById('who'), who2 = document.getElementById('who2'), i = 0;
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!still) setInterval(function () {
+    i = (i + 1) % people.length;
+    who.textContent = people[i]; who.classList.remove('swap'); void who.offsetWidth; who.classList.add('swap');
+    who2.textContent = people[i];
+  }, 2600);
+
+  // Sticky bar shows once the note scrolls away.
+  var bar = document.getElementById('bar'), note = document.querySelector('.note');
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { bar.classList.toggle('show', !e[0].isIntersecting && e[0].boundingClientRect.top < 0); }).observe(note);
+})();
+</script>
+</body>
+</html>

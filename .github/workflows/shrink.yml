@@ -11,21 +11,17 @@ permissions:
 jobs:
   shrink:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 58
     steps:
       - uses: actions/checkout@v4
       - name: Get ffmpeg
         run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
-      - name: Shrink any big videos
+      - name: TV-Safe Inbox (convert every new video, checks every 90 s for ~50 min)
         env:
           NOW_SHOWING_URL: https://script.google.com/macros/s/AKfycbzKbUZ5sWH0BmEbl--z4s_majFIG5ZlGpO6YgUYU8xi7G6m1_z0dAjT62zbv8g-0_l7/exec
           SHRINK_KEY: ${{ secrets.SHRINK_KEY }}
+          RUN_SECONDS: "3000"
         run: python3 tools/shrink.py
-      - name: Publish streaming copies
-        run: |
-          git config user.name "daw-bot"; git config user.email "daw-bot@users.noreply.github.com"
-          git add -A media
-          if ! git diff --cached --quiet; then git commit -m "Update TV streaming copies" && git push; fi
       - name: Keep the schedule alive
         # GitHub pauses schedules after 60 quiet days; a small monthly commit prevents that.
         run: |

@@ -1,14 +1,22 @@
-"""Keeps the DaW Now Showing TV videos playable on the Fire TVs.
-1. Shrinks oversized videos in the Drive folders (TV copy in Drive, original to Originals).
-2. Keeps a streaming copy of every TV video in media/ on GitHub Pages, so the TVs play
-   them straight from the web instead of loading whole files into their small memory.
-Runs on GitHub every few minutes. Talks only to the Now Showing web app."""
-import base64, json, os, subprocess, sys, urllib.request
-from pathlib import Path
+"""TV-Safe Inbox converter for DaW Now Showing (runs free on GitHub Actions).
+
+Every video dropped in the Drive TV folders that is not yet stamped "tv-safe" is converted to the
+recipe PROVEN on the venue Fire TVs on 2026-11-19:
+    H.264 High, x264 preset slow defaults (level 5.0, ref 5, 3 B-frames, keyint 250),
+    yuv420p, at most 30 fps and 1920x1080, no sound track, 2-pass to stay under 6 MB.
+(Files made with preset veryslow / level 4.0 / 8 B-frames "played" but showed WHITE on the TVs.)
+The TV script stamps the copy tv-safe and moves the original to Originals. TVs play only stamped videos.
+
+Each run stays awake about 50 minutes and checks every 90 seconds, so a new video plays within minutes.
+Talks only to the Now Showing web app, using SHRINK_KEY."""
+import base64, json, os, subprocess, sys, time, urllib.request
 
 URL = os.environ["NOW_SHOWING_URL"]
 KEY = os.environ["SHRINK_KEY"]
-TARGET = 9 * 1024 * 1024  # leave room under the 12 MB TV limit
+TARGET = 5_700_000          # bytes we aim for; the TV script refuses anything over 6,000,000
+HARD_MAX = 6_000_000
+RUN_SECONDS = int(os.environ.get("RUN_SECONDS", "3000"))
+POLL = 90
 
 
 def call(action, **kw):
@@ -24,26 +32,10 @@ def call(action, **kw):
 def duration(path):
     s = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                         "-of", "default=nw=1:nk=1", path], capture_output=True, text=True).stdout
-    return max(1.0, float(s.strip() or 60))
-
-
-def has_audio(path):
-    s = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
-                        "stream=index", "-of", "csv=p=0", path], capture_output=True, text=True).stdout
-    return bool(s.strip())
-
-
-def encode(src, dst, kbps):
-    big = kbps >= 1100
-    w, h = (1920, 1080) if big else (1280, 720)
-    vf = f"scale='min({w},iw)':'min({h},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"
-    cmd = ["ffmpeg", "-y", "-v", "error", "-i", src, "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
-           "-profile:v", "high", "-level", "4.0", "-pix_fmt", "yuv420p", "-r", "30",
-           "-b:v", f"{kbps}k", "-maxrate", f"{kbps}k", "-bufsize", f"{kbps * 2}k"]
-    cmd += ["-c:a", "aac", "-b:a", "64k"] if has_audio(src) else ["-an"]
-    cmd += ["-movflags", "+faststart", dst]
-    subprocess.run(cmd, check=True)
-    return os.path.getsize(dst)
+    try:
+        return max(1.0, float(s.strip()))
+    except ValueError:
+        return 60.0
 
 
 def download(it, path):
@@ -58,78 +50,66 @@ def download(it, path):
             start = piece["next"]
 
 
+def encode(src, dst, kbps, w, h):
+    vf = f"scale='min({w},iw)':'min({h},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"
+    base = ["ffmpeg", "-y", "-v", "error", "-i", src, "-vf", vf, "-fpsmax", "30", "-an",
+            "-c:v", "libx264", "-preset", "slow", "-profile:v", "high", "-pix_fmt", "yuv420p",
+            "-b:v", f"{kbps}k", "-passlogfile", "x264pass"]
+    subprocess.run(base + ["-pass", "1", "-f", "mp4", "/dev/null"], check=True)
+    subprocess.run(base + ["-pass", "2", "-movflags", "+faststart", dst], check=True)
+    return os.path.getsize(dst)
+
+
 def verify(path):
     """Decode the whole file once; a copy that will not decode never reaches the TVs."""
     r = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-f", "null", "-"], capture_output=True, text=True)
     return r.returncode == 0 and not r.stderr.strip()
 
 
-def mirror():
-    media = Path("media"); media.mkdir(exist_ok=True)
-    man_path = media / "manifest.json"
-    man = json.loads(man_path.read_text()) if man_path.exists() else {"files": {}}
-    files = man["files"]
-    vids = call("videos")["items"]
-    keep = set()
-    changed = False
-    for it in vids:
-        keep.add(it["id"])
-        if files.get(it["id"], {}).get("v") == it["version"] and (media / f"{it['id']}.mp4").exists():
-            continue
-        print(f"stream copy: {it['folder']}/{it['name']}")
-        download(it, "m_in.bin")
-        out = media / f"{it['id']}.mp4"
-        # the exact settings proven to play on the Fire TVs: 1080p H.264, about 1.6 Mbps peak, no sound track
-        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", "m_in.bin",
-                        "-vf", "scale='min(1920,iw)':'min(1080,ih)':force_original_aspect_ratio=decrease:force_divisible_by=2",
-                        "-c:v", "libx264", "-preset", "veryfast", "-profile:v", "high", "-level", "4.0", "-pix_fmt", "yuv420p",
-                        "-crf", "25", "-maxrate", "1600k", "-bufsize", "3200k", "-an", "-movflags", "+faststart", str(out)], check=True)
-        os.remove("m_in.bin")
-        if not verify(str(out)):
-            print("  copy failed its check, skipped"); out.unlink(); continue
-        files[it["id"]] = {"v": it["version"], "f": f"media/{it['id']}.mp4", "name": it["name"]}
-        changed = True
-    for vid in list(files):
-        if vid not in keep:
-            print(f"removing stream copy of {files[vid].get('name')}")
-            p = media / f"{vid}.mp4"
-            if p.exists(): p.unlink()
-            del files[vid]; changed = True
-    if changed:
-        man_path.write_text(json.dumps(man, indent=1))
-    print(f"{len(files)} streaming copies")
+def convert(it):
+    print(f"- {it['folder']}/{it['name']} ({it['size'] // 1024} KB)", flush=True)
+    src, dst = "in.bin", "out.mp4"
+    download(it, src)
+    secs = duration(src)
+    kbps = min(2500, int(TARGET * 8 / 1000 / secs * 0.97))
+    w, h = (1920, 1080) if kbps >= 900 else (1280, 720)   # long videos drop to 720p to stay sharp
+    size = 0
+    for _ in range(3):
+        size = encode(src, dst, max(kbps, 150), w, h)
+        if size <= TARGET:
+            break
+        kbps = int(kbps * TARGET / size * 0.93)
+    if size > HARD_MAX or not verify(dst):
+        raise RuntimeError(f"copy not TV-safe (size {size})")
+    data = base64.b64encode(open(dst, "rb").read()).decode()
+    res = call("put", id=it["id"], data=data)
+    print(f"  done: {res['name']} ({res['size'] // 1024} KB, {w}x{h} max, {kbps} kbps), original kept in Originals", flush=True)
+    for p in (src, dst):
+        if os.path.exists(p):
+            os.remove(p)
 
 
 def main():
-    items = call("list")["items"]
-    print(f"{len(items)} video(s) waiting")
-    for it in items:
-        print(f"- {it['folder']}/{it['name']} ({it['size'] // 1048576} MB)")
-        src, dst = "in.bin", "out.mp4"
-        download(it, src)
-        secs = duration(src)
-        audio = 64 if has_audio(src) else 0
-        kbps = int(min(1600, TARGET * 8 / 1000 / secs - audio))
-        for _ in range(3):
-            size = encode(src, dst, max(kbps, 150))
-            if size <= TARGET:
-                break
-            kbps = int(kbps * TARGET / size * 0.9)
-        if not verify(dst):
-            print("  TV copy failed its check, left as is"); continue
-        data = base64.b64encode(open(dst, "rb").read()).decode()
-        res = call("put", id=it["id"], data=data)
-        print(f"  done: {res['name']} ({res['size'] // 1024} KB), original kept in Originals")
-        os.remove(src); os.remove(dst)
-    try:
-        mirror()
-    except Exception as e:  # streaming copies are extra; never let them stop the shrinker
-        print("streaming copies skipped:", e)
+    start, fails = time.time(), {}
+    while True:
+        try:
+            items = call("list")["items"]
+        except Exception as e:  # a hiccup at Google never stops the watcher
+            print("list failed:", e, flush=True)
+            items = []
+        for it in items:
+            if fails.get(it["id"], 0) >= 2:
+                continue
+            try:
+                convert(it)
+            except Exception as e:
+                fails[it["id"]] = fails.get(it["id"], 0) + 1
+                print(f"  failed ({fails[it['id']]}): {e}", flush=True)
+        if time.time() - start > RUN_SECONDS:
+            break
+        time.sleep(POLL)
+    print("watcher finished this shift", flush=True)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print("error:", e)
-        sys.exit(1)
+    main()
